@@ -94,41 +94,41 @@ COPY php.ini /usr/local/etc/php/conf.d/php-matomo.ini
 COPY docker-entrypoint.sh /entrypoint.sh
 
 # We get Matomo from a script so we only need version in one place.
-COPY get-matomo.sh /var/www/html/get-matomo.sh
+COPY get-matomo.sh /var/www/setup/get-matomo.sh
 
 # Get your free license key at:
 # https://www.maxmind.com/en/geolite2/signup
-COPY get-geolitedb.sh /var/www/html/get-geolitedb.sh
+COPY get-geolitedb.sh /var/www/setup/get-geolitedb.sh
 
 # If you need some contrib plugins, found at:
 # https://plugins.matomo.org/
-COPY contrib-plugins.sh /var/www/html/contrib-plugins.sh
+COPY contrib-plugins.sh /var/www/setup/contrib-plugins.sh
 
 # If you have a Matomo license key, you can use this script to fetch your premium plugins
-# COPY premium-plugins.sh /var/www/html/premium-plugins.sh
+# COPY premium-plugins.sh /var/www/setup/premium-plugins.sh
 
 # If you have custom files, such as custom logo, etc.
-COPY custom-files /var/www/html/custom-files
-COPY custom-script.sh /var/www/html/custom-script.sh
+COPY custom-files /var/www/setup/custom-files
+COPY custom-script.sh /var/www/setup/custom-script.sh
 
 # This is to ensure we get Matomo version and our license keyes in place.
-COPY envvars.conf /var/www/html/envvars.conf
-COPY set-envvars.sh /var/www/html/set-envvars.sh
+COPY envvars.conf /var/www/setup/envvars.conf
+COPY set-envvars.sh /var/www/setup/set-envvars.sh
 
 RUN set -ex; \
 	apk add --no-cache --upgrade bash rsync; \
-	cd /var/www/html/ \
+	cd /var/www/setup/ \
 	&& ./get-matomo.sh \
 	&& ./get-geolitedb.sh \
 	&& ./contrib-plugins.sh \
 	# You need a valid license key for this script:
 	# && ./premium-plugins.sh \
-	&& ls -lah /var/www/html/ \
-	&& ls -lah /var/www/html/custom-files \
+	&& ls -lah /var/www/setup/ \
+	&& ls -lah /var/www/setup/custom-files \
 	# If you have custom files you want to mount into your image
 	&& ./custom-script.sh \
 	# A hack to get files in place before they are mounted from entrypoint
-	&& rsync -crlOt --no-owner --no-group --no-perms /var/www/html/ /usr/src/matomo/
+	&& rsync -crlOt --no-owner --no-group --no-perms /var/www/setup/ /usr/src/matomo/
 
 # WORKDIR is /var/www/html (inherited via "FROM php")
 # "/entrypoint.sh" will populate it at container startup from /usr/src/matomo

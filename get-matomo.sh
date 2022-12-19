@@ -22,7 +22,6 @@ gpgconf --kill all
 
 rm -rf "$GNUPGHOME" matomo.tar.gz.asc
 
-# tar -xzf matomo.tar.gz -C /usr/src/
-tar -xzf matomo.tar.gz -C /var/www/html/
+tar -xzf matomo.tar.gz -C /usr/src/
 rm matomo.tar.gz
 apk del .fetch-deps
