@@ -1,0 +1,9 @@
+
+.DS_Store
+envvars.conf
+.vscode/
+custom-files/*
+!custom-files/
+!custom-files/.gitkeep
+custom-script.sh
+
