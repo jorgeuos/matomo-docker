@@ -8,14 +8,7 @@ set -ex
 # shellcheck source=/dev/null
 . ./set-envvars.sh
 
-
-fetchDeps="
-    dirmngr
-    gnupg
-"
-
-apt-get update
-apt-get install -y --no-install-recommends $fetchDeps
+apk add --no-cache --virtual .fetch-deps gnupg
 
 curl -fsSL -o matomo.tar.gz "https://builds.matomo.org/matomo-${MATOMO_VERSION}.tar.gz"
 curl -fsSL -o matomo.tar.gz.asc "https://builds.matomo.org/matomo-${MATOMO_VERSION}.tar.gz.asc"
@@ -28,9 +21,7 @@ gpg --batch --verify matomo.tar.gz.asc matomo.tar.gz
 gpgconf --kill all
 
 rm -rf "$GNUPGHOME" matomo.tar.gz.asc
+
 tar -xzf matomo.tar.gz -C /usr/src/
-
 rm matomo.tar.gz
-apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false $fetchDeps
-
-rm -rf /var/lib/apt/lists/*
+apk del .fetch-deps
